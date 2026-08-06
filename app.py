@@ -91,7 +91,11 @@ def predict():
         encoded_row = {}
         for col in FEATURE_ORDER:
             if col in encoders:
-                encoded_row[col] = encoders[col].transform([raw_input[col]])[0]
+                try:
+                    encoded_row[col] = encoders[col].transform([raw_input[col]])[0]
+                except ValueError:
+                    label = FEATURE_DISPLAY_NAMES.get(col, col)
+                    return jsonify({"error": f"'{raw_input[col]}' isn't a supported value for {label}."}), 400
             else:
                 encoded_row[col] = raw_input[col]
 
